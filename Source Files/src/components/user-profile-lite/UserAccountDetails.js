@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
   Card,
@@ -15,10 +15,40 @@ import {
   Button
 } from "shards-react";
 
-const UserAccountDetails = ({ title }) => (
+class UserAccountDetails extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {
+        firstName: "Sandra",
+        lastName: "Alcaraz",
+        email: "sandra@gmail.com",
+        password: "sandra",
+        address: "1234 Main St.",
+        city: "",
+        state: "",
+        zip: ""
+      }
+    }
+    this.handleChange = this.handleChange.bind(this);
+    
+  }
+  handleChange(event){    
+    const name = event.target.id;
+    const newdata = this.state.data;
+    this.setState({
+      data : {
+        newdata,
+        [name]: event.target.value,
+      }
+    })
+  }
+
+render(){
+  return(
   <Card small className="mb-4">
     <CardHeader className="border-bottom">
-      <h6 className="m-0">{title}</h6>
+      <h6 className="m-0">{this.props.title}</h6>
     </CardHeader>
     <ListGroup flush>
       <ListGroupItem className="p-3">
@@ -30,20 +60,20 @@ const UserAccountDetails = ({ title }) => (
                 <Col md="6" className="form-group">
                   <label htmlFor="feFirstName">First Name</label>
                   <FormInput
-                    id="feFirstName"
+                    id="firstName"
                     placeholder="First Name"
-                    value="Sandra"
-                    onChange={() => {}}
+                    value={this.state.data.firstName}
+                    onChange={this.handleChange}
                   />
                 </Col>
                 {/* Last Name */}
                 <Col md="6" className="form-group">
                   <label htmlFor="feLastName">Last Name</label>
                   <FormInput
-                    id="feLastName"
+                    id="lastName"
                     placeholder="Last Name"
-                    value="Alcaraz"
-                    onChange={() => {}}
+                    value={this.state.data.lastName}
+                    onChange={this.handleChange}
                   />
                 </Col>
               </Row>
@@ -53,10 +83,10 @@ const UserAccountDetails = ({ title }) => (
                   <label htmlFor="feEmail">Email</label>
                   <FormInput
                     type="email"
-                    id="feEmail"
+                    id="email"
                     placeholder="Email Address"
-                    value="sandra@gmail.com"
-                    onChange={() => {}}
+                    value={this.state.data.email}
+                    onChange={this.handleChange}
                     autoComplete="email"
                   />
                 </Col>
@@ -65,10 +95,10 @@ const UserAccountDetails = ({ title }) => (
                   <label htmlFor="fePassword">Password</label>
                   <FormInput
                     type="password"
-                    id="fePassword"
+                    id="password"
                     placeholder="Password"
-                    value="EX@MPL#P@$$w0RD"
-                    onChange={() => {}}
+                    value={this.state.data.password}
+                    onChange={this.handleChange}
                     autoComplete="current-password"
                   />
                 </Col>
@@ -76,10 +106,10 @@ const UserAccountDetails = ({ title }) => (
               <FormGroup>
                 <label htmlFor="feAddress">Address</label>
                 <FormInput
-                  id="feAddress"
+                  id="address"
                   placeholder="Address"
-                  value="1234 Main St."
-                  onChange={() => {}}
+                  value={this.state.data.address}
+                  onChange={this.handleChange}
                 />
               </FormGroup>
               <Row form>
@@ -87,35 +117,35 @@ const UserAccountDetails = ({ title }) => (
                 <Col md="6" className="form-group">
                   <label htmlFor="feCity">City</label>
                   <FormInput
-                    id="feCity"
+                    id="city"
                     placeholder="City"
-                    onChange={() => {}}
+                    value= {this.state.data.city}
+                    onChange={this.handleChange}
                   />
                 </Col>
                 {/* State */}
                 <Col md="4" className="form-group">
                   <label htmlFor="feInputState">State</label>
-                  <FormSelect id="feInputState">
-                    <option>Choose...</option>
-                    <option>...</option>
-                  </FormSelect>
+                  <FormInput
+                    id="state"
+                    placeholder="State"
+                    value={this.state.data.state}
+                    onChange={this.handleChange}
+                  />
                 </Col>
                 {/* Zip Code */}
                 <Col md="2" className="form-group">
                   <label htmlFor="feZipCode">Zip</label>
                   <FormInput
-                    id="feZipCode"
+                    id="zip"
                     placeholder="Zip"
-                    onChange={() => {}}
+                    value= {this.state.data.zip}
+                    onChange={this.handleChange}
                   />
                 </Col>
               </Row>
               <Row form>
                 {/* Description */}
-                <Col md="12" className="form-group">
-                  <label htmlFor="feDescription">Description</label>
-                  <FormTextarea id="feDescription" rows="5" />
-                </Col>
               </Row>
               <Button theme="accent">Update Account</Button>
             </Form>
@@ -124,7 +154,10 @@ const UserAccountDetails = ({ title }) => (
       </ListGroupItem>
     </ListGroup>
   </Card>
-);
+  )
+  }
+}
+
 
 UserAccountDetails.propTypes = {
   /**

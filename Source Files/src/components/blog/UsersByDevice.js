@@ -85,7 +85,7 @@ UsersByDevice.propTypes = {
 };
 
 UsersByDevice.defaultProps = {
-  title: "User mood",
+  title: "User Mood",
   chartData: {
     datasets: [
       {

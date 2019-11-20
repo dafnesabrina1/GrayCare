@@ -10,7 +10,117 @@ import NewDraft from "./../components/blog/NewDraft";
 import Discussions from "./../components/blog/Discussions";
 import TopReferrals from "./../components/common/TopReferrals";
 
-const BlogOverview = ({ smallStats }) => (
+class BlogOverview extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      smallStats: [
+        {
+          label: "Heart Rate",
+          value: "120",
+          chartLabels: [null, null, null, null, null, null, null],
+          attrs: { md: "6", sm: "6" },
+          datasets: [
+            {
+              label: "Today",
+              fill: "start",
+              borderWidth: 1.5,
+              backgroundColor: "rgba(0, 184, 216, 0.1)",
+              borderColor: "rgb(0, 184, 216)",
+              data: []
+            }
+          ]
+        },
+        {
+          label: "Stress",
+          value: "Average",
+          chartLabels: [null, null, null, null, null, null, null],
+          attrs: { md: "6", sm: "6" },
+          datasets: [
+            {
+              label: "Today",
+              fill: "start",
+              borderWidth: 1.5,
+              backgroundColor: "rgba(23,198,113,0.1)",
+              borderColor: "rgb(23,198,113)",
+              data: [1, 2, 3, 3, 3, 4, 4]
+            }
+          ]
+        },
+        {
+          label: "Sleep",
+          value: "8hr 22mins",
+          chartLabels: [null, null, null, null, null, null, null],
+          attrs: { md: "4", sm: "6" },
+          datasets: [
+            {
+              label: "Today",
+              fill: "start",
+              borderWidth: 1.5,
+              backgroundColor: "rgba(255,180,0,0.1)",
+              borderColor: "rgb(255,180,0)",
+              data: [2, 3, 3, 3, 4, 3, 3]
+            }
+          ]
+        },
+        {
+          label: "Motionless",
+          value: "5hr 36min",
+          chartLabels: [null, null, null, null, null, null, null],
+          attrs: { md: "4", sm: "6" },
+          datasets: [
+            {
+              label: "Today",
+              fill: "start",
+              borderWidth: 1.5,
+              backgroundColor: "rgba(255,65,105,0.1)",
+              borderColor: "rgb(255,65,105)",
+              data: [1, 7, 1, 3, 1, 4, 8]
+            }
+          ]
+        },
+      ]
+    }
+  }
+
+  componentDidMount(){
+    fetch("https://testing-graycare.herokuapp.com/getHeartRate").then(res => res.json()
+    ).then((data)=> {
+      console.log(this.state.smallStats[0])
+      const fun = this.state.smallStats;
+      console.log(fun[0].value)
+      fun[0].value = data.value;
+      console.log(fun[0].datasets[0].data)
+      fun[0].datasets[0].data = data.data.map(Object.values);
+      console.log(data.data);
+      this.setState({smallStats: fun})
+      console.log(this.state.smallStats[0])
+    });
+    fetch("https://testing-graycare.herokuapp.com/getStress").then(res => res.json()
+    ).then((data)=> {
+      const fun = this.state.smallStats;
+      fun[1].value = data.value;
+      fun[1].datasets[0].data = data.data;
+      this.setState({smallStats: fun})
+    });
+    fetch("https://testing-graycare.herokuapp.com/getSleep").then(res => res.json()
+    ).then((data)=> {
+      const fun = this.state.smallStats;
+      fun[2].value = data.value;
+      fun[2].datasets[0].data = data.data;
+      this.setState({smallStats: fun})
+    });
+    fetch("https://testing-graycare.herokuapp.com/getMotionless").then(res => res.json()
+    ).then((data)=> {
+      const fun = this.state.smallStats;
+      fun[3].value = data.value;
+      fun[3].datasets[0].data = data.data;
+      this.setState({smallStats: fun})
+    });
+  }
+  
+  render() {
+    return (
   <Container fluid className="main-content-container px-4">
     {/* Page Header */}
     <Row noGutters className="page-header py-4">
@@ -19,7 +129,7 @@ const BlogOverview = ({ smallStats }) => (
 
     {/* Small Stats Blocks */}
     <Row>
-      {smallStats.map((stats, idx) => (
+      {this.state.smallStats.map((stats, idx) => (
         <Col className="col-lg mb-4" key={idx} {...stats.attrs}>
           <SmallStats
             id={`small-stats-${idx}`}
@@ -28,9 +138,6 @@ const BlogOverview = ({ smallStats }) => (
             chartLabels={stats.chartLabels}
             label={stats.label}
             value={stats.value}
-            percentage={stats.percentage}
-            increase={stats.increase}
-            decrease={stats.decrease}
           />
         </Col>
       ))}
@@ -67,7 +174,9 @@ const BlogOverview = ({ smallStats }) => (
       */}
     </Row>
   </Container>
-);
+    )
+  }
+}
 
 BlogOverview.propTypes = {
   /**
@@ -76,102 +185,6 @@ BlogOverview.propTypes = {
   smallStats: PropTypes.array
 };
 
-BlogOverview.defaultProps = {
-  smallStats: [
-    {
-      label: "Heart Rate",
-      value: "130",
-      percentage: "4.7%",
-      increase: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "6", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(0, 184, 216, 0.1)",
-          borderColor: "rgb(0, 184, 216)",
-          data: [1, 2, 1, 3, 5, 4, 7]
-        }
-      ]
-    },
-    {
-      label: "Stress",
-      value: "Average",
-      percentage: "12.4",
-      increase: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "6", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(23,198,113,0.1)",
-          borderColor: "rgb(23,198,113)",
-          data: [1, 2, 3, 3, 3, 4, 4]
-        }
-      ]
-    },
-    {
-      label: "Sleep",
-      value: "8hr 22mins",
-      percentage: "3.8%",
-      increase: false,
-      decrease: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "4", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(255,180,0,0.1)",
-          borderColor: "rgb(255,180,0)",
-          data: [2, 3, 3, 3, 4, 3, 3]
-        }
-      ]
-    },
-    {
-      label: "Motionless",
-      value: "5hr 36min",
-      percentage: "2.71%",
-      increase: false,
-      decrease: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "4", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgba(255,65,105,0.1)",
-          borderColor: "rgb(255,65,105)",
-          data: [1, 7, 1, 3, 1, 4, 8]
-        }
-      ]
-    },
-    {
-      label: "Weight",
-      value: "61.5kg",
-      percentage: "1.4%",
-      increase: false,
-      decrease: true,
-      chartLabels: [null, null, null, null, null, null, null],
-      attrs: { md: "4", sm: "6" },
-      datasets: [
-        {
-          label: "Today",
-          fill: "start",
-          borderWidth: 1.5,
-          backgroundColor: "rgb(0,123,255,0.1)",
-          borderColor: "rgb(0,123,255)",
-          data: [3, 2, 3, 2, 4, 5, 4]
-        }
-      ]
-    }
-  ]
-};
+BlogOverview.defaultProps = {};
 
 export default BlogOverview;
