@@ -23,7 +23,7 @@ class UserAccountDetails extends React.Component{
         firstName: "Sandra",
         lastName: "Alcaraz",
         email: "sandra@gmail.com",
-        password: "sandra",
+        password: "h",
         address: "1234 Main St.",
         city: "",
         state: "",
@@ -32,6 +32,21 @@ class UserAccountDetails extends React.Component{
     }
     this.handleChange = this.handleChange.bind(this);
     
+  }
+  componentDidMount(){
+    fetch("https://testing-graycare.herokuapp.com/getProfile").then(res => res.json()
+    ).then((data)=> {
+      const fun = this.state.data;
+      fun.firstName = data.firstName;
+      fun.lastName = data.lastName;
+      fun.email = data.email;
+      fun.password = data.password;
+      fun.address = data.address;
+      fun.city = data.city;
+      fun.state = data.state;
+      fun.zip = data.zip;
+      this.setState({smallStats: fun})
+    });
   }
   handleChange(event){    
     const name = event.target.id;
