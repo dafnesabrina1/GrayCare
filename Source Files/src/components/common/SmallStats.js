@@ -5,12 +5,25 @@ import shortid from "shortid";
 import { Card, CardBody } from "shards-react";
 
 import Chart from "../../utils/chart";
+import { ENGINE_METHOD_NONE } from "constants";
 
 class SmallStats extends React.Component {
   constructor(props) {
     super(props);
 
     this.canvasRef = React.createRef();
+    this.state = {
+      chart: null
+    }
+    this.createChart = this.createChart.bind(this);
+  }
+  
+  componentWillReceiveProps(nextProps, nextContext) {
+    // update chart according to prop change
+      this.state.chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(nextProps.chartData);
+      });
+      this.state.chart.update();
   }
 
   componentDidMount() {
@@ -75,8 +88,13 @@ class SmallStats extends React.Component {
       },
       ...this.props.chartConfig
     };
+    this.createChart(chartConfig)
+  }
 
-    new Chart(this.canvasRef.current, chartConfig);
+  createChart(chartConfig) {
+
+    let theChart = new Chart(this.canvasRef.current, chartConfig);
+    this.setState({ chart: theChart });
   }
 
   render() {

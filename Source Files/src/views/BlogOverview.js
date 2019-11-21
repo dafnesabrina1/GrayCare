@@ -27,7 +27,7 @@ class BlogOverview extends React.Component {
               borderWidth: 1.5,
               backgroundColor: "rgba(0, 184, 216, 0.1)",
               borderColor: "rgb(0, 184, 216)",
-              data: []
+              data: [1,2,3,4,5,6,7]
             }
           ]
         },
@@ -91,7 +91,7 @@ class BlogOverview extends React.Component {
       console.log(fun[0].value)
       fun[0].value = data.value;
       console.log(fun[0].datasets[0].data)
-      fun[0].datasets[0].data = data.data.map(Object.values);
+      fun[0].datasets[0].data = data.data;
       console.log(data.data);
       this.setState({smallStats: fun})
       console.log(this.state.smallStats[0])
