@@ -8,81 +8,99 @@ import Chart from "../../utils/chart";
 class UsersOverview extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      BlogUsersOverview: null
+    }
 
     this.canvasRef = React.createRef();
+    this.makeChart = this.makeChart.bind(this);
+  }
+
+  
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    // update chart according to prop change
+      this.state.BlogUsersOverview.data.datasets.forEach((dataset) => {
+        dataset.data.push(nextProps.chartData);
+      });
+      this.state.BlogUsersOverview.update();
   }
 
   componentDidMount() {
-    const chartOptions = {
-      ...{
-        responsive: true,
-        legend: {
-          position: "top"
-        },
-        elements: {
-          line: {
-            // A higher value makes the line look skewed at this ratio.
-            tension: 0.3
+
+    this.makeChart(this.props.chartData);
+  }
+
+  makeChart(chartdata){
+    this.state.BlogUsersOverview = new Chart(this.canvasRef.current, {
+      type: "LineWithLine",
+      data: chartdata,
+      options: {
+        ...{
+          responsive: true,
+          legend: {
+            position: "top"
           },
-          point: {
-            radius: 0
+          elements: {
+            line: {
+              // A higher value makes the line look skewed at this ratio.
+              tension: 0.3
+            },
+            point: {
+              radius: 0
+            }
+          },
+          scales: {
+            xAxes: [
+              {
+                gridLines: false,
+                ticks: {
+                  callback(tick, index) {
+                    // Jump every 7 values on the X axis labels to avoid clutter.
+                    return index % 7 !== 0 ? "" : tick;
+                  }
+                }
+              }
+            ],
+            yAxes: [
+              {
+                ticks: {
+                  suggestedMax: 45,
+                  callback(tick) {
+                    if (tick === 0) {
+                      return tick;
+                    }
+                    // Format the amounts using Ks for thousands.
+                    return tick > 999 ? `${(tick / 1000).toFixed(1)}K` : tick;
+                  }
+                }
+              }
+            ]
+          },
+          hover: {
+            mode: "nearest",
+            intersect: false
+          },
+          tooltips: {
+            custom: false,
+            mode: "nearest",
+            intersect: false
           }
         },
-        scales: {
-          xAxes: [
-            {
-              gridLines: false,
-              ticks: {
-                callback(tick, index) {
-                  // Jump every 7 values on the X axis labels to avoid clutter.
-                  return index % 7 !== 0 ? "" : tick;
-                }
-              }
-            }
-          ],
-          yAxes: [
-            {
-              ticks: {
-                suggestedMax: 45,
-                callback(tick) {
-                  if (tick === 0) {
-                    return tick;
-                  }
-                  // Format the amounts using Ks for thousands.
-                  return tick > 999 ? `${(tick / 1000).toFixed(1)}K` : tick;
-                }
-              }
-            }
-          ]
-        },
-        hover: {
-          mode: "nearest",
-          intersect: false
-        },
-        tooltips: {
-          custom: false,
-          mode: "nearest",
-          intersect: false
-        }
-      },
-      ...this.props.chartOptions
-    };
-
-    const BlogUsersOverview = new Chart(this.canvasRef.current, {
-      type: "LineWithLine",
-      data: this.props.chartData,
-      options: chartOptions
+        ...this.props.chartOptions
+      }
     });
 
     // They can still be triggered on hover.
-    const buoMeta = BlogUsersOverview.getDatasetMeta(0);
+    const buoMeta = this.state.BlogUsersOverview.getDatasetMeta(0);
     buoMeta.data[0]._model.radius = 0;
     buoMeta.data[
-      this.props.chartData.datasets[0].data.length - 1
+      chartdata.datasets[0].data.length - 1
     ]._model.radius = 0;
 
     // Render the chart.
-    BlogUsersOverview.render();
+    this.state.BlogUsersOverview.render();
+
   }
 
   render() {

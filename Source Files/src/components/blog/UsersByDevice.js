@@ -15,14 +15,27 @@ import Chart from "../../utils/chart";
 class UsersByDevice extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      chart: null
+    }
 
     this.canvasRef = React.createRef();
   }
+  componentWillReceiveProps(nextProps, nextContext) {
+    // update chart according to prop change
+      this.state.chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(nextProps.chartData);
+      });
+      this.state.chart.update();
+  }
 
   componentDidMount() {
+    this.createChart(this.props.chartData)
+  }
+  createChart(chartData){
     const chartConfig = {
       type: "pie",
-      data: this.props.chartData,
+      data: chartData,
       options: {
         ...{
           legend: {
@@ -43,7 +56,8 @@ class UsersByDevice extends React.Component {
       }
     };
 
-    new Chart(this.canvasRef.current, chartConfig);
+    this.state.chart = new Chart(this.canvasRef.current, chartConfig);
+
   }
 
   render() {
@@ -98,7 +112,7 @@ UsersByDevice.defaultProps = {
         ]
       }
     ],
-    labels: ["Happy", "Okay", "Sad"]
+    labels: ["Happy", "Sad", "Neutro"]
   }
 };
 

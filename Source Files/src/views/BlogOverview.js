@@ -14,6 +14,113 @@ class BlogOverview extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      chartDataDevice: {
+        datasets: [
+          {
+            hoverBorderColor: "#ffffff",
+            data: [68.3, 24.2, 7.5],
+            backgroundColor: [
+              "rgba(0,123,255,0.9)",
+              "rgba(0,123,255,0.5)",
+              "rgba(0,123,255,0.3)"
+            ]
+          }
+        ],
+        labels: ["Happy", "Sad", "Neutro"]
+      },
+      chartData: {
+        labels: Array.from(new Array(30), (_, i) => (i === 0 ? 1 : i)),
+        datasets: [
+          {
+            label: "Current Month",
+            fill: "start",
+            data: [
+              500,
+              800,
+              320,
+              180,
+              240,
+              320,
+              230,
+              650,
+              590,
+              1200,
+              750,
+              940,
+              1420,
+              1200,
+              960,
+              1450,
+              1820,
+              2800,
+              2102,
+              1920,
+              3920,
+              3202,
+              3140,
+              2800,
+              3200,
+              3200,
+              3400,
+              2910,
+              3100,
+              4250
+            ],
+            backgroundColor: "rgba(0,123,255,0.1)",
+            borderColor: "rgba(0,123,255,1)",
+            pointBackgroundColor: "#ffffff",
+            pointHoverBackgroundColor: "rgb(0,123,255)",
+            borderWidth: 1.5,
+            pointRadius: 0,
+            pointHoverRadius: 3
+          },
+          {
+            label: "Past Month",
+            fill: "start",
+            data: [
+              380,
+              430,
+              120,
+              230,
+              410,
+              740,
+              472,
+              219,
+              391,
+              229,
+              400,
+              203,
+              301,
+              380,
+              291,
+              620,
+              700,
+              300,
+              630,
+              402,
+              320,
+              380,
+              289,
+              410,
+              300,
+              530,
+              630,
+              720,
+              780,
+              1200
+            ],
+            backgroundColor: "rgba(255,65,105,0.1)",
+            borderColor: "rgba(255,65,105,1)",
+            pointBackgroundColor: "#ffffff",
+            pointHoverBackgroundColor: "rgba(255,65,105,1)",
+            borderDash: [3, 3],
+            borderWidth: 1,
+            pointRadius: 0,
+            pointHoverRadius: 2,
+            pointBorderColor: "rgba(255,65,105,1)"
+          }
+        ]
+      },
       smallStats: [
         {
           label: "Heart Rate",
@@ -27,7 +134,7 @@ class BlogOverview extends React.Component {
               borderWidth: 1.5,
               backgroundColor: "rgba(0, 184, 216, 0.1)",
               borderColor: "rgb(0, 184, 216)",
-              data: [1,2,3,4,5,6,7]
+              data: [0,0,0,0,0,0,0]
             }
           ]
         },
@@ -43,7 +150,7 @@ class BlogOverview extends React.Component {
               borderWidth: 1.5,
               backgroundColor: "rgba(23,198,113,0.1)",
               borderColor: "rgb(23,198,113)",
-              data: [1, 2, 3, 3, 3, 4, 4]
+              data: [0,0,0,0,0,0,0]
             }
           ]
         },
@@ -59,7 +166,7 @@ class BlogOverview extends React.Component {
               borderWidth: 1.5,
               backgroundColor: "rgba(255,180,0,0.1)",
               borderColor: "rgb(255,180,0)",
-              data: [2, 3, 3, 3, 4, 3, 3]
+              data: [0,0,0,0,0,0,0]
             }
           ]
         },
@@ -75,7 +182,7 @@ class BlogOverview extends React.Component {
               borderWidth: 1.5,
               backgroundColor: "rgba(255,65,105,0.1)",
               borderColor: "rgb(255,65,105)",
-              data: [1, 7, 1, 3, 1, 4, 8]
+              data: [0,0,0,0,0,0,0]
             }
           ]
         },
@@ -86,15 +193,10 @@ class BlogOverview extends React.Component {
   componentDidMount(){
     fetch("https://testing-graycare.herokuapp.com/getHeartRate").then(res => res.json()
     ).then((data)=> {
-      console.log(this.state.smallStats[0])
       const fun = this.state.smallStats;
-      console.log(fun[0].value)
       fun[0].value = data.value;
-      console.log(fun[0].datasets[0].data)
       fun[0].datasets[0].data = data.data;
-      console.log(data.data);
       this.setState({smallStats: fun})
-      console.log(this.state.smallStats[0])
     });
     fetch("https://testing-graycare.herokuapp.com/getStress").then(res => res.json()
     ).then((data)=> {
@@ -116,6 +218,20 @@ class BlogOverview extends React.Component {
       fun[3].value = data.value;
       fun[3].datasets[0].data = data.data;
       this.setState({smallStats: fun})
+    });
+    fetch("https://testing-graycare.herokuapp.com/getExercise").then(res => res.json()
+    ).then((data)=> {
+      const f = this.state.chartData;
+      f.datasets[1].data = data.dataCurrent;
+      f.datasets[0].data = data.dataPast;
+      this.setState({chartData: f})
+    });
+    fetch("https://testing-graycare.herokuapp.com/getMood").then(res => res.json()
+    ).then((data)=> {
+      const f = this.state.chartDataDevice;
+      f.datasets[0].data = data.data;
+      this.setState({chartDataDevice: f})
+      console.log(this.state.chartDataDevice);
     });
   }
   
@@ -146,12 +262,12 @@ class BlogOverview extends React.Component {
     <Row>
       {/* Users Overview */}
       <Col lg="8" md="12" sm="12" className="mb-4">
-        <UsersOverview />
+        <UsersOverview chartData= {this.state.chartData}/>
       </Col>
 
       {/* Users by Device */}
       <Col lg="4" md="6" sm="12" className="mb-4">
-        <UsersByDevice />
+        <UsersByDevice chartData = {this.state.chartDataDevice}/>
       </Col>
       
       {/* New Draft */}
