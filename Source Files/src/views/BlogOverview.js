@@ -186,6 +186,22 @@ class BlogOverview extends React.Component {
             }
           ]
         },
+        {
+          label: "Steps",
+          value: "5hr 36min",
+          chartLabels: [null, null, null, null, null, null, null],
+          attrs: { md: "4", sm: "6" },
+          datasets: [
+            {
+              label: "Today",
+              fill: "start",
+              borderWidth: 1.5,
+              backgroundColor: "rgba(255,65,105,0.1)",
+              borderColor: "rgba(255,65,105,0.1)",
+              data: [0,0,0,0,0,0,0]
+            }
+          ]
+        },
       ]
     }
   }
@@ -232,6 +248,12 @@ class BlogOverview extends React.Component {
       f.datasets[0].data = data.data;
       this.setState({chartDataDevice: f})
       console.log(this.state.chartDataDevice);
+    });
+    fetch("https://testing-graycare.herokuapp.com/getPasos").then(res => res.json()
+    ).then((data)=> {
+      const fun = this.state.smallStats;
+      fun[4].value = data.data;
+      this.setState({smallStats: fun})
     });
   }
   
