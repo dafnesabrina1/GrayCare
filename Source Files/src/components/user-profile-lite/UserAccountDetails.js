@@ -19,7 +19,6 @@ class UserAccountDetails extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      data: {
         firstName: "Sandra",
         lastName: "Alcaraz",
         email: "sandra@gmail.com",
@@ -28,35 +27,77 @@ class UserAccountDetails extends React.Component{
         city: "",
         state: "",
         zip: ""
-      }
     }
-    this.handleChange = this.handleChange.bind(this);
+    this.submit = this.submit.bind(this);
+    this.handleChangeFirstName = this.handleChangeFirstName.bind(this);
+    this.handleChangeLastName = this.handleChangeLastName.bind(this);
+    this.handleChangeEmail = this.handleChangeEmail.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
+    this.handleChangeAddress = this.handleChangeAddress.bind(this);
+    this.handleChangeCity = this.handleChangeCity.bind(this);
+    this.handleChangeState = this.handleChangeState.bind(this);
+    this.handleChangeZip = this.handleChangeZip.bind(this);
     
   }
   componentDidMount(){
     fetch("https://testing-graycare.herokuapp.com/getProfile").then(res => res.json()
     ).then((data)=> {
-      const fun = this.state.data;
-      fun.firstName = data.firstName;
-      fun.lastName = data.lastName;
-      fun.email = data.email;
-      fun.password = data.password;
-      fun.address = data.address;
-      fun.city = data.city;
-      fun.state = data.state;
-      fun.zip = data.zip;
-      this.setState({smallStats: fun})
+      const fun = this.state;
+      this.setState({firstName: data.firstName})
+      this.setState({password: data.password})
+      this.setState({email: data.email})
+      this.setState({lastName: data.lastName})
+      this.setState({address: data.address})
+      this.setState({city: data.city})
+      this.setState({state: data.state})
+      this.setState({zip: data.zip})
+      
     });
   }
-  handleChange(event){    
-    const name = event.target.id;
-    const newdata = this.state.data;
-    this.setState({
-      data : {
-        newdata,
-        [name]: event.target.value,
-      }
-    })
+
+  submit(){
+    const data = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email,
+      password: this.state.password,
+      address: this.state.address,
+      city: this.state.city,
+      state: this.state.state,
+      zip: this.state.zip
+    }
+    console.log(data)
+    fetch("https://testing-graycare.herokuapp.com/updateProfile",
+        {
+          method: 'POST',
+          body: JSON.stringify(data)
+      }).then(res => res.json())
+      .catch(error => console.error('Error:', error))
+      .then(response => console.log('Success:', response));
+  }
+  handleChangeFirstName(event) {
+    this.setState({firstName: event.target.value});
+  }
+  handleChangeLastName(event) {
+    this.setState({lastName: event.target.value});
+  }
+  handleChangeEmail(event) {
+    this.setState({email: event.target.value});
+  }
+  handleChangePassword(event) {
+    this.setState({password: event.target.value});
+  }
+  handleChangeAddress(event) {
+    this.setState({address: event.target.value});
+  }
+  handleChangeCity(event) {
+    this.setState({city: event.target.value});
+  }
+  handleChangeState(event) {
+    this.setState({state: event.target.value});
+  }
+  handleChangeZip(event) {
+    this.setState({zip: event.target.value});
   }
 
 render(){
@@ -77,8 +118,8 @@ render(){
                   <FormInput
                     id="firstName"
                     placeholder="First Name"
-                    value={this.state.data.firstName}
-                    onChange={this.handleChange}
+                    value={this.state.firstName}
+                    onChange={this.handleChangeFirstName}
                   />
                 </Col>
                 {/* Last Name */}
@@ -87,8 +128,8 @@ render(){
                   <FormInput
                     id="lastName"
                     placeholder="Last Name"
-                    value={this.state.data.lastName}
-                    onChange={this.handleChange}
+                    value={this.state.lastName}
+                    onChange={this.handleChangeLastName}
                   />
                 </Col>
               </Row>
@@ -100,8 +141,8 @@ render(){
                     type="email"
                     id="email"
                     placeholder="Email Address"
-                    value={this.state.data.email}
-                    onChange={this.handleChange}
+                    value={this.state.email}
+                    onChange={this.handleChangeEmail}
                     autoComplete="email"
                   />
                 </Col>
@@ -112,8 +153,8 @@ render(){
                     type="password"
                     id="password"
                     placeholder="Password"
-                    value={this.state.data.password}
-                    onChange={this.handleChange}
+                    value={this.state.password}
+                    onChange={this.handleChangePassword}
                     autoComplete="current-password"
                   />
                 </Col>
@@ -123,8 +164,8 @@ render(){
                 <FormInput
                   id="address"
                   placeholder="Address"
-                  value={this.state.data.address}
-                  onChange={this.handleChange}
+                  value={this.state.address}
+                  onChange={this.handleChangeAddress}
                 />
               </FormGroup>
               <Row form>
@@ -134,8 +175,8 @@ render(){
                   <FormInput
                     id="city"
                     placeholder="City"
-                    value= {this.state.data.city}
-                    onChange={this.handleChange}
+                    value= {this.state.city}
+                    onChange={this.handleChangeCity}
                   />
                 </Col>
                 {/* State */}
@@ -144,8 +185,8 @@ render(){
                   <FormInput
                     id="state"
                     placeholder="State"
-                    value={this.state.data.state}
-                    onChange={this.handleChange}
+                    value={this.state.state}
+                    onChange={this.handleChangeState}
                   />
                 </Col>
                 {/* Zip Code */}
@@ -154,15 +195,15 @@ render(){
                   <FormInput
                     id="zip"
                     placeholder="Zip"
-                    value= {this.state.data.zip}
-                    onChange={this.handleChange}
+                    value= {this.state.zip}
+                    onChange={this.handleChangeZip}
                   />
                 </Col>
               </Row>
               <Row form>
                 {/* Description */}
               </Row>
-              <Button theme="accent">Update Account</Button>
+              <Button theme="accent" onClick = {this.submit}>Update Account</Button>
             </Form>
           </Col>
         </Row>
