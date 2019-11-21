@@ -48,7 +48,7 @@ render(){
   return(
   <Card small className="mb-4">
     <CardHeader className="border-bottom">
-      <h6 className="m-0">{this.props.title}</h6>
+      <h6 data-testid="uad-title" className="m-0">{this.props.title}</h6>
     </CardHeader>
     <ListGroup flush>
       <ListGroupItem className="p-3">
